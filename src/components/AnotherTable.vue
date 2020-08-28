@@ -1,32 +1,390 @@
 <template>
-  <div class="">
+      <div class="total">
+        <table style="width:100%">
+          <tr style="height: min-content;">
+            <td style="padding:0">
+              <table class="head" ref="tabla">
+                  <tr class="">
+                    <th>
+                      <div class="" style="height:auto;padding:14px">
+                        <div  class=" new-div mini"  >
+                          <div class="">
+                            <span>Ordenados por:</span>
+                          </div>
+                          <div style="margin-left:8px;display:inline-flex">
+                            <select style="max-width:200px" v-model="orden"
+                            class="custom-select custom-select-sm ">
+                              <option v-bind:key="key" v-for="(item,key) in cabeceras"
+                              :value="key">{{item['label']}}</option>
+                            </select>
+                            <button class="asc"  :class="asc?'arriba':'abajo'" v-if="typeof asc==='boolean'"
+                            @click="cambio(orden)">
+                            <span > <b>&#10140;</b> </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </th>
+                  </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="table-datos">
+                <table  class="cien datos" >
+                    <tr  v-bind:key="index" v-for="(entry,index) in filteredData"
+                     class="md-table-row">
+                      <td  class="md-table-cell " >
+                        <div class="md-table-cell-container celdas" >
+                          <div v-bind:key="key" v-for="(item,key) in cabeceras" class="">
+                            <span>
+                                <b style="color:#0200ae">
+                                {{ cabeceras[key].label}}:
+                                </b>
+                                <a :href="entry[key]|href(cabeceras[key].href) " class="fecha">
+                                {{cabeceras[key].prefix}}{{entry[key] |ejecutar(cabeceras[key].fun)}}{{cabeceras[key].sufix}}
+                                </a>
+                            </span><br>
+                          </div>
 
+                          <div class="botones" >
+                            <button   class="btn_rep" type="button" name="button">
+                              Registros
+                            </button>
+                            <button   class="btn_rep" type="button" name="button">
+                              Ubicación
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+               </table>
+             </div>
+            </td>
+          </tr>
+        </table>
   </div>
+
 </template>
 
 <script>
 export default {
   name: 'AnotherTable',
   props: {
-    msg: String,
+    data: Array,
+    filterKey: String,
+    cabeceras: Object,
+    columns: Array,
+  },
+  data() {
+    const ordenados = {};
+    this.columns.forEach(function (key) {
+      ordenados[key] = 1
+    })
+    return {
+      sortKey: '',
+      sortOrders: ordenados,
+      ancho: '150px',
+      tablaWidth: '',
+      orden: 'fec',
+      asc: '',
+    };
+  },
+  computed: {
+    filteredData: function () {
+    var sortKey = this.sortKey
+    var filterKey = this.filterKey && this.filterKey.toLowerCase()
+    var order = this.sortOrders[sortKey] || 1
+    var data = this.data
+    if (filterKey) {
+      data = data.filter(function (row) {
+        return Object.keys(row).some(function (key) {
+          return String(row[key]).toLowerCase().indexOf(filterKey) > -1
+        })
+      })
+    }
+    if (sortKey) {
+      data = data.slice().sort(function (a, b) {
+        a = a[sortKey]
+        b = b[sortKey]
+        return (a === b ? 0 : a > b ? 1 : -1) * order
+      })
+    }
+    return data
+    }
+  },
+  filters: {
+    capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+    parseGeo(arr) {
+      return `${arr[1]}, ${arr[0]}`;
+    },
+    ejecutar(a,f){
+      if(f){
+        return f(a)
+      }
+      return a;
+    },
+    href(a,f){
+      if(f){
+        return f(a);
+      }
+      return '#'
+    }
+  },
+  watch:{
+    orden:function (valor){
+      this.sortBy(valor);
+      this.asc = true;
+    }
+  },
+  methods: {
+    sortBy(key) {
+      this.sortKey = key;
+      const val = this.sortOrders[key] * -1;
+      this.sortOrders[key] = val;
+    },
+    cambio(valor) {
+      this.sortBy(valor);
+      this.asc = !this.asc;
+    }
+  },
+  created() {
+  },
+  mounted() {
+    const ancho = this.$refs.tabla.clientWidth;
+    this.ancho = `${ancho / (this.columns.length + 1)}px`;
+    window.addEventListener('resize', () => {
+      // let ancho = this.$refs.tabla.clientWidth;
+      // ancho = ancho -120
+      // this.ancho = `${ancho/(this.columns.length+1)}px`
+    });
+    console.log(this.ancho);
   },
 };
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+a{
+text-decoration: none;
+/* color: var(--md-theme-default-primary-on-background,#448aff); */
+color:unset;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.new-div{
+  position:unset;overflow:unset;width: 100%;height:auto;
+  padding-right: 32px;
+  padding-left: 24px;
 }
-li {
+
+.celdas{
+  display: inline-flex;
+    align-items: center;
+    width: 100%;
+    line-height: 2;
+}
+.celdas>div{
+  margin: auto;
+}
+.mini{
+  display: inline-flex;
+    align-items: center;
+    width: auto;
+}
+.botones{
+  display: flex;
+  margin: auto;
+}
+.botones>button:not(:last-child){
+  margin-right: 5px;
+}
+@media(max-width:1000px){
+  .botones{
+    display: grid;
+  }
+  .botones>button:not(:last-child){
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+
+}
+@media(max-width:600px){
+  .celdas{
+    display: grid;
+  }
+  .celdas>div{
+    margin: 0 auto 0 0 ;
+  }
+  .botones{
+    display: inline-flex;
+    margin: auto!important;
+  }
+  .botones>button:not(:last-child){
+    margin-right: 15px;
+    margin-bottom: 0;
+  }
+
+}
+@media(max-width:450px){
+  .mini{
+    display: grid;
+  }
+}
+
+.fecha{
+  cursor: pointer;
+}
+.fecha:hover {
+    text-decoration: underline;
+    color: #40B4E3;
+}
+  .cien{
+    width: 100%
+  }
+  .table-datos{
+     max-height:60vh;
+      overflow-y:auto;
+      overflow-x:hidden;
+  }
+  .content-tabla{
+    overflow-x: auto;
+  }
+
+  /* width */
+::-webkit-scrollbar {
+  width: 8px;
+
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+/* .linea{
+  border-top: gray 1px solid;
+} */
+
+th.active >div >div{
+  /* color: #fff; */
+  text-decoration: underline;
+}
+
+.md-table-cell{
+  text-align: left!important;
+}
+.espacio{
+  margin:10px 5px!important;
+}
+
+table {
+border-collapse: collapse;
+}
+
+table.head{
+width: 100%;
+
+}
+table.head th{
+color:#0200ae;
+font-size: 14px;
+}
+
+
+.datos tr {
+border-top: 1px solid #dddddd;
+text-align: left;
+padding: 0;
+background: white;
+}
+
+.custom-select-sm {
+  height: calc(1.8125rem + 2px);
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  font-size: 75%;
+}
+
+.custom-select {
+-moz-appearance:none; /* Firefox */
+ -webkit-appearance:none; /* Safari and Chrome */
+ appearance:none;
+outline: none;
   display: inline-block;
-  margin: 0 10px;
+  width: 100%;
+  height: calc(2.25rem + 2px);
+  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+  line-height: 1.5;
+  color: #495057;
+  vertical-align: middle;
+  background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  background-size: 8px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
-a {
-  color: #42b983;
+div.total {
+
+    border-top: 1px solid rgba(34,36,38,.15);
+    border-right: 1px solid rgba(34,36,38,.15);
+    border-bottom: 1px solid rgba(34,36,38,.15);
+    border-left: 1px solid rgba(34,36,38,.15);
+    border-radius: 10px;
+    background: #d7ecf7!important;
+}
+
+.asc{
+
+border-collapse: collapse;
+box-sizing: inherit;
+padding: 0;
+display: inline-block;
+position: relative;
+overflow: hidden;
+outline: none;
+background: transparent;
+border: 0;
+transition: .4s cubic-bezier(.4,0,.2,1);
+font-family: inherit;
+line-height: normal;
+text-decoration: none;
+vertical-align: top;
+white-space: nowrap;
+user-select: none;
+font-size: 14px;
+font-weight: 500;
+text-transform: uppercase;
+border-radius: 50%;
+z-index: 5;
+width: 40px;
+min-width: 40px;
+height: 40px;
+margin: 0 6px;
+cursor: pointer;
+color: var(--md-theme-default-text-primary-on-background,rgba(0,0,0,.87));
+
+}
+.asc:hover{
+  background-color: currentColor;
+    opacity: .12;
+}
+.arriba{
+  transform: rotate(90deg);
+}
+.abajo{
+  transform: rotate(-90deg)!important;
 }
 </style>
