@@ -6,8 +6,7 @@
               <table class="head" ref="tabla">
                   <tr class="">
                     <th>
-                      <div class="" style="height:auto;padding:14px">
-                        <div  class=" new-div mini"  >
+                        <div  class="new-div mini"  >
                           <div class="">
                             <span>Ordenados por:</span>
                           </div>
@@ -17,13 +16,13 @@
                               <option v-bind:key="key" v-for="(item,key) in cabeceras"
                               :value="key">{{item['label']}}</option>
                             </select>
-                            <button class="asc"  :class="asc?'arriba':'abajo'" v-if="typeof asc==='boolean'"
+                            <button class="asc" :class="asc?'arriba':'abajo'"
+                            v-if="typeof asc==='boolean'"
                             @click="cambio(orden)">
                             <span > <b>&#10140;</b> </span>
                             </button>
                           </div>
                         </div>
-                      </div>
                     </th>
                   </tr>
               </table>
@@ -42,18 +41,17 @@
                                 <b style="color:#0200ae">
                                 {{ cabeceras[key].label}}:
                                 </b>
-                                <a :href="entry[key]|href(cabeceras[key].href) " class="fecha">
-                                {{cabeceras[key].prefix}}{{entry[key] |ejecutar(cabeceras[key].fun)}}{{cabeceras[key].sufix}}
+                                <a :href="entry[key]|href(cabeceras[key].href)" class="fecha">
+                                {{cabeceras[key].prefix}}
+                                {{entry[key] |ejecutar(cabeceras[key].fun)}}
+                                {{cabeceras[key].sufix}}
                                 </a>
                             </span><br>
                           </div>
-
                           <div class="botones" >
-                            <button   class="btn_rep" type="button" name="button">
-                              Registros
-                            </button>
-                            <button   class="btn_rep" type="button" name="button">
-                              Ubicación
+                            <button v-bind:key="i" @click="clickButton(entry,but.action)"
+                            v-for="(but, i) in buttons" :class="but.class" type="button" >
+                              {{but.label}}
                             </button>
                           </div>
                         </div>
@@ -76,12 +74,13 @@ export default {
     filterKey: String,
     cabeceras: Object,
     columns: Array,
+    buttons: Array,
   },
   data() {
     const ordenados = {};
-    this.columns.forEach(function (key) {
-      ordenados[key] = 1
-    })
+    this.columns.forEach((key) => {
+      ordenados[key] = 1;
+    });
     return {
       sortKey: '',
       sortOrders: ordenados,
@@ -92,27 +91,25 @@ export default {
     };
   },
   computed: {
-    filteredData: function () {
-    var sortKey = this.sortKey
-    var filterKey = this.filterKey && this.filterKey.toLowerCase()
-    var order = this.sortOrders[sortKey] || 1
-    var data = this.data
-    if (filterKey) {
-      data = data.filter(function (row) {
-        return Object.keys(row).some(function (key) {
-          return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-        })
-      })
-    }
-    if (sortKey) {
-      data = data.slice().sort(function (a, b) {
-        a = a[sortKey]
-        b = b[sortKey]
-        return (a === b ? 0 : a > b ? 1 : -1) * order
-      })
-    }
-    return data
-    }
+    filteredData() {
+      const { sortKey } = this;
+      const filterKey = this.filterKey && this.filterKey.toLowerCase();
+      const order = this.sortOrders[sortKey] || 1;
+      let { data } = this;
+      if (filterKey) {
+        data = data.filter((row) => Object.keys(row).some((key) => {
+          return String(row[key]).toLowerCase().indexOf(filterKey) > -1;
+        }));
+      }
+      if (sortKey) {
+        data = data.slice().sort((a, b) => {
+          a = a[sortKey];
+          b = b[sortKey];
+          return (a === b ? 0 : a > b ? 1 : -1) * order;
+        });
+      }
+      return data;
+    },
   },
   filters: {
     capitalize(str) {
@@ -121,24 +118,24 @@ export default {
     parseGeo(arr) {
       return `${arr[1]}, ${arr[0]}`;
     },
-    ejecutar(a,f){
-      if(f){
-        return f(a)
+    ejecutar(a, f) {
+      if (f) {
+        return f(a);
       }
       return a;
     },
-    href(a,f){
-      if(f){
+    href(a, f) {
+      if (f) {
         return f(a);
       }
-      return '#'
-    }
+      return '#';
+    },
   },
-  watch:{
-    orden:function (valor){
+  watch: {
+    orden(valor) {
       this.sortBy(valor);
       this.asc = true;
-    }
+    },
   },
   methods: {
     sortBy(key) {
@@ -149,7 +146,12 @@ export default {
     cambio(valor) {
       this.sortBy(valor);
       this.asc = !this.asc;
-    }
+    },
+    clickButton(data, fun) {
+      if (fun) {
+        fun(data);
+      }
+    },
   },
   created() {
   },
@@ -157,11 +159,7 @@ export default {
     const ancho = this.$refs.tabla.clientWidth;
     this.ancho = `${ancho / (this.columns.length + 1)}px`;
     window.addEventListener('resize', () => {
-      // let ancho = this.$refs.tabla.clientWidth;
-      // ancho = ancho -120
-      // this.ancho = `${ancho/(this.columns.length+1)}px`
     });
-    console.log(this.ancho);
   },
 };
 
@@ -170,13 +168,13 @@ export default {
 <style scoped>
 a{
 text-decoration: none;
-/* color: var(--md-theme-default-primary-on-background,#448aff); */
 color:unset;
 }
 .new-div{
   position:unset;overflow:unset;width: 100%;height:auto;
   padding-right: 32px;
   padding-left: 24px;
+  height:auto;padding:4px
 }
 
 .celdas{
@@ -300,7 +298,6 @@ table.head th{
 color:#0200ae;
 font-size: 14px;
 }
-
 
 .datos tr {
 border-top: 1px solid #dddddd;
