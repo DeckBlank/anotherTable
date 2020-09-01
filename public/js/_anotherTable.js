@@ -2,6 +2,7 @@ const funcion = (data) => {
   console.log(data)
 }
 const _at = {
+  sustantivo: 'AlgoQueListamos',
   cabeceras: {
     nom:{label:"Estación",skill:['text'],asset:"",prefix:"",sufix:"",
     href:function(h){return `https://${h}.com`}},
@@ -12,6 +13,16 @@ const _at = {
   },
   columns:['nom','cod','pos'],
   data: [{"cod":"carv","nom":"caraveli","pos":{"type":"Point","coordinates":[-73.37,-15.77]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
+        {"cod":"xxx","nom":"diesciseis","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
         {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
         {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
         {"cod":"toqa","nom":"toquepala","pos":{"type":"Point","coordinates":[-70.64,-17.3]}},
