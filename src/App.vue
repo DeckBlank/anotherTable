@@ -30,22 +30,20 @@
       </AnotherTable>
     </div>
     <br>
-    <div class="">
-      <div class="">
+    <div class="fila fila-100">
+      <div class="izq">
         {{anotherTable.sustantivo}} del {{posicion}} al
         {{(posicion + paginacion - 1)>anotherTable.data.length?anotherTable.data.length:(posicion + paginacion - 1)}}
         de un total de {{anotherTable.data.length}}
       </div>
-      <div class="" style="display:flex">
-        <div class="grupo" style=";margin-left:auto">
-          <div class="izq" :class="posicion==1?'desactivado':''"  @click="anterior()">
-            <span class="small-show">&lt;&lt;&nbsp;</span>
-            <span class="small-hide">Anterior</span>
-          </div>
-          <div class="der" :class="posicion+paginacion>=anotherTable.data.length?'desactivado':''" @click="siguiente()">
-            <span class="small-hide">Siguiente</span>
-            <span class="small-show">>></span>
-          </div>
+      <div class="der grupo" style="display:flex">
+        <div class="grupo-izq" :class="posicion==1?'desactivado':''"  @click="anterior()">
+          <span class="small-show">&lt;&lt;&nbsp;</span>
+          <span class="small-hide">Anterior</span>
+        </div>
+        <div class="grupo-der" :class="posicion+paginacion>=anotherTable.data.length?'desactivado':''" @click="siguiente()">
+          <span class="small-hide">Siguiente</span>
+          <span class="small-show">>></span>
         </div>
       </div>
     </div>
@@ -53,11 +51,11 @@
 </template>
 
 <script>
-//
+
 import AnotherTable from './components/AnotherTable.vue';
 
 export default {
-  name: 'App',
+  name: 'anotherTable',
   components: {
     AnotherTable,
   },
@@ -107,6 +105,65 @@ export default {
 </script>
 
 <style>
+.grupo{
+  line-height: 1.4285em;
+  color: rgba(0, 0, 0, .87);
+  -webkit-box-direction: normal;
+  text-align: right;
+  box-sizing: inherit;
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  background: #fff;
+  font-weight: 400;
+  border: 1px solid rgba(34, 36, 38, .15);
+  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+  border-radius: .28571429rem;
+  min-height: 2.85714286em;
+  font-size: 1rem;
+  margin: 0;
+  display: inline-flex;
+  vertical-align: middle;
+}
+.grupo-izq{
+vertical-align: middle;
+line-height: 1;
+flex: 0 0 auto;
+user-select: none;
+background: 0 0;
+padding: .92857143em 1.14285714em;
+
+display: flex;
+-webkit-box-align: center;
+align-items: center;
+border-radius: .28571429rem 0 0 .28571429rem;
+text-align: center;
+}
+
+.grupo-der{
+vertical-align: middle;
+line-height: 1;
+flex: 0 0 auto;
+border-left: 1px solid rgba(34, 36, 38, .15);
+padding: .92857143em 1.14285714em;
+color: rgba(0, 0, 0, .87);
+display: flex;
+-webkit-box-align: center;
+align-items: center;
+text-align: center;
+border-radius: 0 .28571429rem .28571429rem 0;
+}
+.grupo-der:hover{
+  background-color: #f7f7f7
+}
+.grupo-izq:hover{
+  background-color: #f7f7f7
+}
+
+.desactivado{
+  color: rgba(40, 40, 40, .3)!important;
+}
+.desactivado:hover{
+  background-color: transparent!important;
+}
 .fila-100{
     width: 100%;
 }
